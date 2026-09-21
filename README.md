@@ -17,10 +17,11 @@ budget. It never rounds position size up.
 
 ## Automated daily watchlist
 
-The free automated mode runs after the ASX close and uses Alpha Vantage daily
-share prices to produce CALL/PUT **signals** for the configured ASX 20
-universe. It does not select an option contract or open a paper trade because a
-licensed ASX options-chain feed is not connected.
+The watchlist command can use an Alpha Vantage key, but automated scheduling is
+currently disabled because the provider did not return history for the ASX
+`.AX` universe during end-to-end verification. It does not select an option
+contract or open a paper trade because a licensed ASX options-chain feed is not
+connected.
 
 Set `ALPHA_VANTAGE_API_KEY` in the environment, then run:
 
@@ -62,11 +63,12 @@ about current market prices.
 
 ## Automation
 
-`.github/workflows/hourly-scan.yml` runs the signal watchlist once each weekday
-after the ASX close. Add the repository Actions secret
-`ALPHA_VANTAGE_API_KEY`; each run stores CSV and JSON reports as a private
-workflow artifact for 90 days. The separate options paper-trading scan remains
-available for a future licensed options feed.
+`.github/workflows/hourly-scan.yml` exposes a manual diagnostic run using the
+repository Actions secret `ALPHA_VANTAGE_API_KEY`. Automatic scheduling remains
+disabled until an ASX-capable feed is connected. Successful manual runs store
+CSV and JSON reports as a private workflow artifact for 90 days. The separate
+options paper-trading scan remains available for a future licensed options
+feed.
 
 ## Important
 
