@@ -1,0 +1,37 @@
+name: Hourly ASX options paper scan
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub cron is UTC. These times cover 10:15-15:45 Sydney in AEST;
+    # the application should perform the final timezone/holiday gate once a
+    # production data adapter is connected.
+    - cron: "15 0-5 * * 1-5"
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Require production normalized data
+        run: |
+          test -f data/option_chain.csv
+          test -f data/underlying_history.csv
+      - name: Run paper scan
+        run: |
+          python -m asx_paper_trader.cli scan --config config.json \
+            --quotes data/option_chain.csv \
+            --history data/underlying_history.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paper-ledger-${{ github.run_id }}
+          path: state/paper_trading.db
+          if-no-files-found: error
+          retention-days: 90
