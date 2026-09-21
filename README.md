@@ -15,6 +15,22 @@ risk controls, and recording every decision in a durable SQLite ledger.
 The engine refuses a trade when one contract's premium exceeds the 2% risk
 budget. It never rounds position size up.
 
+## Automated daily watchlist
+
+The free automated mode runs after the ASX close and uses Alpha Vantage daily
+share prices to produce CALL/PUT **signals** for the configured ASX 20
+universe. It does not select an option contract or open a paper trade because a
+licensed ASX options-chain feed is not connected.
+
+Set `ALPHA_VANTAGE_API_KEY` in the environment, then run:
+
+```bash
+python -m asx_paper_trader.cli watchlist --config config.json
+```
+
+The command writes `reports/daily_watchlist.json` and
+`reports/daily_watchlist.csv`.
+
 ## Run locally
 
 Python 3.11+ is sufficient; the runtime has no third-party dependencies.
@@ -46,12 +62,11 @@ about current market prices.
 
 ## Automation
 
-`.github/workflows/hourly-scan.yml` provides the free scheduled runner. It is
-disabled from opening fabricated trades: scheduled runs require a real
-normalized `data/option_chain.csv` and `data/underlying_history.csv`. The
-workflow preserves the SQLite ledger as a private workflow artifact. For a
-long-running deployment, replace artifact storage with a private repository
-commit or a free hosted database.
+`.github/workflows/hourly-scan.yml` runs the signal watchlist once each weekday
+after the ASX close. Add the repository Actions secret
+`ALPHA_VANTAGE_API_KEY`; each run stores CSV and JSON reports as a private
+workflow artifact for 90 days. The separate options paper-trading scan remains
+available for a future licensed options feed.
 
 ## Important
 
