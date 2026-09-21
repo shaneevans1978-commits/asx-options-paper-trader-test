@@ -1,0 +1,37 @@
+{
+  "account": {
+    "starting_balance": 10000.0,
+    "max_risk_per_trade_pct": 0.02,
+    "max_total_open_risk_pct": 0.10,
+    "max_open_positions": 5,
+    "fee_per_contract": 0.0
+  },
+  "strategy": {
+    "minimum_dte": 21,
+    "maximum_dte": 60,
+    "exit_dte": 7,
+    "minimum_volume": 5,
+    "minimum_open_interest": 50,
+    "maximum_spread_pct": 0.20,
+    "minimum_abs_delta": 0.35,
+    "maximum_abs_delta": 0.65,
+    "stop_loss_pct": 0.50,
+    "take_profit_pct": 1.00,
+    "maximum_holding_days": 10,
+    "short_sma_days": 20,
+    "long_sma_days": 50,
+    "rsi_days": 14
+  },
+  "market": {
+    "timezone": "Australia/Sydney",
+    "scan_start": "10:15",
+    "scan_end": "15:45",
+    "universe": [
+      "ALL", "ANZ", "BHP", "CBA", "CSL", "FMG", "GMG", "MQG", "NAB", "QBE",
+      "REA", "RIO", "RMD", "STO", "TCL", "TLS", "WBC", "WDS", "WES", "WOW"
+    ]
+  },
+  "storage": {
+    "ledger_path": "state/paper_trading.db"
+  }
+}
