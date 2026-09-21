@@ -2,12 +2,6 @@ name: Daily ASX signal watchlist
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/hourly-scan.yml"
-  schedule:
-    # 08:00 UTC is 18:00 AEST / 19:00 AEDT, safely after the ASX close.
-    - cron: "0 8 * * 1-5"
 
 permissions:
   contents: read
