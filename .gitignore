@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+state/*.db
+data/option_chain.csv
+data/underlying_history.csv
