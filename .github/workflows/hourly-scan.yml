@@ -1,12 +1,10 @@
-name: Hourly ASX options paper scan
+name: Daily ASX signal watchlist
 
 on:
   workflow_dispatch:
   schedule:
-    # GitHub cron is UTC. These times cover 10:15-15:45 Sydney in AEST;
-    # the application should perform the final timezone/holiday gate once a
-    # production data adapter is connected.
-    - cron: "15 0-5 * * 1-5"
+    # 08:00 UTC is 18:00 AEST / 19:00 AEDT, safely after the ASX close.
+    - cron: "0 8 * * 1-5"
 
 permissions:
   contents: read
@@ -20,18 +18,13 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install -e .
-      - name: Require production normalized data
-        run: |
-          test -f data/option_chain.csv
-          test -f data/underlying_history.csv
-      - name: Run paper scan
-        run: |
-          python -m asx_paper_trader.cli scan --config config.json \
-            --quotes data/option_chain.csv \
-            --history data/underlying_history.csv
+      - name: Build daily signal watchlist
+        env:
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+        run: python -m asx_paper_trader.cli watchlist --config config.json
       - uses: actions/upload-artifact@v4
         with:
-          name: paper-ledger-${{ github.run_id }}
-          path: state/paper_trading.db
+          name: daily-watchlist-${{ github.run_id }}
+          path: reports/
           if-no-files-found: error
           retention-days: 90
